@@ -1,33 +1,43 @@
 package com.assigiment.employeeDetailsService;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
+@Table(name = "employees")
 public class Employee {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private long id;
 
-    @Column(nullable = false)
-    private String fullName;
+    @Column(name = "fullname")
+    @NotEmpty
+    private String fullname;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email")
+    @Email(message = "Please provide a valid email")
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "dob")
     private Date dob;
 
-    @Column(nullable = false)
+    @Column(name = "address")
+    @NotEmpty
     private String address;
 
-    @Column(nullable = false)
+    @Column(name = "permanent")
+    @NotNull
     private boolean permanent;
 
-    @Column(nullable = false)
-    private float basicSalary;
+    @Column(name = "basic_salary")
+    @NotNull
+    private float basic_salary;
 
-    @Column(nullable = false)
+    @Column(name = "department")
+    @NotEmpty
     private String department;
 
     public long getId() {
@@ -39,11 +49,11 @@ public class Employee {
     }
 
     public String getFullName() {
-        return fullName;
+        return fullname;
     }
 
-    public void setFullName(String full_name) {
-        this.fullName = full_name;
+    public void setFullName(String fullname) {
+        this.fullname = fullname;
     }
 
     public Date getDob() {
@@ -71,11 +81,11 @@ public class Employee {
     }
 
     public float getBasicSalary() {
-        return basicSalary;
+        return basic_salary;
     }
 
     public void setBasicSalary(float basic_salary) {
-        this.basicSalary = basic_salary;
+        this.basic_salary = basic_salary;
     }
 
     public String getDepartment() {
