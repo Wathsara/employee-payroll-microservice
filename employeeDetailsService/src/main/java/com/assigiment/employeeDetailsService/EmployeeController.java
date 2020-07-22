@@ -61,10 +61,10 @@ public class EmployeeController {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ExpressionException("Employee not found for this id :: " + employeeId));
 
-        employee.setFull_name(employeeDetails.getFull_name());
+        employee.setFullName(employeeDetails.getFullName());
         employee.setAddress(employeeDetails.getAddress());
         employee.setEmail(employeeDetails.getEmail());
-        employee.setBasic_salary(employeeDetails.getBasic_salary());
+        employee.setBasicSalary(employeeDetails.getBasicSalary());
         employee.setPermanent(employeeDetails.isPermanent());
         employee.setDepartment(employeeDetails.getDepartment());
         employee.setDob(employeeDetails.getDob());

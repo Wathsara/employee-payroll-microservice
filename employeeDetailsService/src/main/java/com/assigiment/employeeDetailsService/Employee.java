@@ -10,7 +10,7 @@ public class Employee {
     private long id;
 
     @Column(nullable = false)
-    private String full_name;
+    private String fullName;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -25,7 +25,7 @@ public class Employee {
     private boolean permanent;
 
     @Column(nullable = false)
-    private float basic_salary;
+    private float basicSalary;
 
     @Column(nullable = false)
     private String department;
@@ -38,12 +38,12 @@ public class Employee {
         this.id = id;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+    public void setFullName(String full_name) {
+        this.fullName = full_name;
     }
 
     public Date getDob() {
@@ -70,12 +70,12 @@ public class Employee {
         this.permanent = permanent;
     }
 
-    public float getBasic_salary() {
-        return basic_salary;
+    public float getBasicSalary() {
+        return basicSalary;
     }
 
-    public void setBasic_salary(float basic_salary) {
-        this.basic_salary = basic_salary;
+    public void setBasicSalary(float basic_salary) {
+        this.basicSalary = basic_salary;
     }
 
     public String getDepartment() {
