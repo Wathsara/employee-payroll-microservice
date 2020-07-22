@@ -9,25 +9,25 @@ public class Employee {
     @Id
     private long id;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String fullName;
 
-    @Column(nullable = false, unique = true)
+//    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private Date dob;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private boolean permanent;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private float basicSalary;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String department;
 
     public long getId() {
