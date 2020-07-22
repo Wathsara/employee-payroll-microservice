@@ -1,16 +1,17 @@
 package com.assigiment.employeeDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.ExpressionException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@Controller
+@RestController
+@RequestMapping(value = "/api/v1")
 public class EmployeeController {
 
     @Autowired
@@ -23,7 +24,7 @@ public class EmployeeController {
     }
 
     @RequestMapping(
-            value = "/api/v1/employees",
+            value = "/employees",
             method = RequestMethod.GET,
             produces = { MediaType.APPLICATION_JSON_VALUE}
             )
@@ -32,35 +33,37 @@ public class EmployeeController {
         List<Employee> list = employeeRepository.findAll();
         return list;
     }
-    @PostMapping("/api/v1/employee")
-    public ResponseEntity<Object> createEmployee(@RequestBody Employee employee) {
+    @PostMapping("/employee")
+    public ResponseEntity<Object> createEmployee(@Valid @RequestBody Employee employee) {
             employeeRepository.save(employee);
             return ResponseEntity.created(URI.create("/api/v1/employee/"+employee.getId())).body("Employee Created Successfully");
     }
 
-    @GetMapping("/api/v1/employee/{id}")
-    public ResponseEntity<Object> getEmployeeById(@PathVariable(value = "id") Long employeeId)
-            throws ExpressionException {
-            Employee employee = employeeRepository.findById(employeeId)
-                    .orElseThrow(() -> new ExpressionException("Employee not found for this id :: " + employeeId));
-            return ResponseEntity.ok().body(employee);
+    @GetMapping("/employee/{id}")
+    public Employee getEmployeeById(@PathVariable(value = "id") Long employeeId)
+            throws IllegalArgumentException {
+            return employeeRepository.findById(employeeId)
+                    .orElseThrow(() -> new NotFoundException(String.format("Employee not found for this id :: " + employeeId)));
     }
 
-    @DeleteMapping("/api/v1/employee/{id}")
+    @DeleteMapping("/employee/{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable(value = "id") Long employeeId)
-            throws Exception {
+            throws IllegalArgumentException {
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ExpressionException("Employee not found for this id :: " + employeeId));
+                .orElseThrow(() -> new NotFoundException(String.format("Employee not found for this id :: " + employeeId)));
 
         employeeRepository.delete(employee);
         return ResponseEntity.ok().body("Employee Deleted");
     }
 
-    @PutMapping("/api/v1/employee/{id}")
-    public ResponseEntity < Employee > updateEmployee(@PathVariable(value = "id") Long employeeId,
-                                                      @RequestBody Employee employeeDetails) throws ExpressionException {
+    @PutMapping("/employee/{id}")
+    public ResponseEntity < Employee > updateEmployee(@Valid @PathVariable(value = "id") Long employeeId,
+                                                      @RequestBody Employee employeeDetails) throws IllegalArgumentException {
+
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ExpressionException("Employee not found for this id :: " + employeeId));
+                .orElseThrow(() ->
+                        new NotFoundException(String.format("Employee not found for this id :: " + employeeId))
+                );
 
         employee.setFullName(employeeDetails.getFullName());
         employee.setAddress(employeeDetails.getAddress());
