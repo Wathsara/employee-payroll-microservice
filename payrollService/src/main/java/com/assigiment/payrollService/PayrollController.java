@@ -1,6 +1,7 @@
 package com.assigiment.payrollService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
@@ -24,6 +25,11 @@ public class PayrollController {
 
     @RequestMapping(value= "/test1", method=RequestMethod.GET)
     public List<Payroll> test1(){
+        return payroll.findAll();
+    }
+
+    @RequestMapping(value= "/test2/{month}", method=RequestMethod.GET)
+    public List<Payroll> test2(@PathVariable(value = "month") String month) throws IllegalArgumentException {
         return payroll.findAll();
     }
 

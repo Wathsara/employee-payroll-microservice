@@ -1,6 +1,8 @@
 package com.assigiment.payrollService;
 
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import java.util.List;
 
