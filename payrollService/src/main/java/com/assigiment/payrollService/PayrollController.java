@@ -1,8 +1,24 @@
 package com.assigiment.payrollService;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.hibernate.validator.internal.util.privilegedactions.GetMethod;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.*;
+
+import org.apache.http.impl.client.HttpClients;
+
+
+import java.io.*;
+import java.net.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,14 +44,9 @@ public class PayrollController {
         return payroll.findAll();
     }
 
-    @RequestMapping(value= "/test2/{month}", method=RequestMethod.GET)
-    public List<Payroll> test2(@PathVariable(value = "month") String month) throws IllegalArgumentException {
-        return payroll.findAll();
-    }
-
 
     @RequestMapping(value = "/payroll", method = RequestMethod.GET)
-    public String  getPayroll() {
+    public String  getPayroll() throws Exception{
 
         PayrollHistory emp1 = new PayrollHistory();
         emp1.setEmployee_id(1);
@@ -59,7 +70,23 @@ public class PayrollController {
         obj.setMonth("JAN");
         obj.setRecords(employee);
 
-        payroll.save(obj);
-        return "Hello";
+//        payroll.save(obj);
+        return getEmployeeData();
+    }
+
+    private static String getEmployeeData() throws Exception{
+
+        StringBuilder result = new StringBuilder();
+        URL url = new URL("http://35.247.184.208:8000/api/v1/employees");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line;
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        rd.close();
+        System.out.println(result.toString());
+        return result.toString();
     }
 }
