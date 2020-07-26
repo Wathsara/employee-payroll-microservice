@@ -3,6 +3,7 @@ package com.assigiment.payrollService;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Entity
 @Table(name="payroll")
@@ -16,4 +17,7 @@ public class Payroll {
     @NotEmpty
     private String month;
 
+    @OneToMany(targetEntity = PayrollHistory.class,cascade = CascadeType.ALL)
+    @JoinColumn(name ="phfk",referencedColumnName = "id")
+    private List<PayrollHistory> products;
 }
