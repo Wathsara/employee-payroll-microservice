@@ -1,13 +1,11 @@
 package com.assigiment.payrollService;
 
+
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
 
 @Entity
-@Table(name="payrolls")
+@Table(name="payroll_history")
 public class PayrollHistory {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
