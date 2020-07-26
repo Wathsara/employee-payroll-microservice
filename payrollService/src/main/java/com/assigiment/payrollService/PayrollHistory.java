@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="payrolls")
-public class Payroll {
+public class PayrollHistory {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private long id;
