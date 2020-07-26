@@ -9,25 +9,20 @@ import javax.validation.constraints.NotEmpty;
 public class PayrollHistory {
 
     @Column(name="employee_id")
-    @NotEmpty
     @Id
     private long employee_id;
 
     @Column(name="basic_salary")
-    @NotEmpty
-    private float basic_salary;
+    private double basic_salary;
 
     @Column(name="salary_after_pension_deducted")
-    @NotEmpty
-    private float salary_after_pension_deducted;
+    private double salary_after_pension_deducted;
 
     @Column(name="salary_after_EPF_deducted")
-    @NotEmpty
-    private float salary_after_EPF_deducted;
+    private double salary_after_EPF_deducted;
 
     @Column(name="paid_by_the_employer_on_behalf_of_the_employee_to_the_EPF")
-    @NotEmpty
-    private float paid_by_the_employer_on_behalf_of_the_employee_to_the_EPF;
+    private double paid_by_the_employer_on_behalf_of_the_employee_to_the_EPF;
 
     public long getEmployee_id() {
         return employee_id;
@@ -37,35 +32,35 @@ public class PayrollHistory {
         this.employee_id = employee_id;
     }
 
-    public float getBasic_salary() {
+    public double getBasic_salary() {
         return basic_salary;
     }
 
-    public void setBasic_salary(float basic_salary) {
+    public void setBasic_salary(double basic_salary) {
         this.basic_salary = basic_salary;
     }
 
-    public float getSalary_after_pension_deducted() {
+    public double getSalary_after_pension_deducted() {
         return salary_after_pension_deducted;
     }
 
-    public void setSalary_after_pension_deducted(float salary_after_pension_deducted) {
+    public void setSalary_after_pension_deducted(double salary_after_pension_deducted) {
         this.salary_after_pension_deducted = salary_after_pension_deducted;
     }
 
-    public float getSalary_after_EPF_deducted() {
+    public double getSalary_after_EPF_deducted() {
         return salary_after_EPF_deducted;
     }
 
-    public void setSalary_after_EPF_deducted(float salary_after_EPF_deducted) {
+    public void setSalary_after_EPF_deducted(double salary_after_EPF_deducted) {
         this.salary_after_EPF_deducted = salary_after_EPF_deducted;
     }
 
-    public float getPaid_by_the_employer_on_behalf_of_the_employee_to_the_EPF() {
+    public double getPaid_by_the_employer_on_behalf_of_the_employee_to_the_EPF() {
         return paid_by_the_employer_on_behalf_of_the_employee_to_the_EPF;
     }
 
-    public void setPaid_by_the_employer_on_behalf_of_the_employee_to_the_EPF(float paid_by_the_employer_on_behalf_of_the_employee_to_the_EPF) {
+    public void setPaid_by_the_employer_on_behalf_of_the_employee_to_the_EPF(double paid_by_the_employer_on_behalf_of_the_employee_to_the_EPF) {
         this.paid_by_the_employer_on_behalf_of_the_employee_to_the_EPF = paid_by_the_employer_on_behalf_of_the_employee_to_the_EPF;
     }
 }

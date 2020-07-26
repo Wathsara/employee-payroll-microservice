@@ -14,10 +14,33 @@ public class Payroll {
     private long id;
 
     @Column(name="month")
-    @NotEmpty
     private String month;
 
     @OneToMany(targetEntity = PayrollHistory.class,cascade = CascadeType.ALL)
     @JoinColumn(name ="phfk",referencedColumnName = "id")
     private List<PayrollHistory> records;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public List<PayrollHistory> getRecords() {
+        return records;
+    }
+
+    public void setRecords(List<PayrollHistory> records) {
+        this.records = records;
+    }
 }
