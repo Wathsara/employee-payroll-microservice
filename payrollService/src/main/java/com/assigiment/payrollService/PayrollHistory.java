@@ -7,12 +7,10 @@ import javax.validation.constraints.NotEmpty;
 @Entity
 @Table(name="payroll_history")
 public class PayrollHistory {
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Id
-    private long id;
 
     @Column(name="employee_id")
     @NotEmpty
+    @Id
     private long employee_id;
 
     @Column(name="basic_salary")
@@ -30,14 +28,6 @@ public class PayrollHistory {
     @Column(name="paid_by_the_employer_on_behalf_of_the_employee_to_the_EPF")
     @NotEmpty
     private float paid_by_the_employer_on_behalf_of_the_employee_to_the_EPF;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public long getEmployee_id() {
         return employee_id;

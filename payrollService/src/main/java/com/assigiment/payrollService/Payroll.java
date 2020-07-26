@@ -19,5 +19,5 @@ public class Payroll {
 
     @OneToMany(targetEntity = PayrollHistory.class,cascade = CascadeType.ALL)
     @JoinColumn(name ="phfk",referencedColumnName = "id")
-    private List<PayrollHistory> products;
+    private List<PayrollHistory> records;
 }
