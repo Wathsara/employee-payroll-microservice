@@ -2,7 +2,6 @@ package com.assigiment.payrollService;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity

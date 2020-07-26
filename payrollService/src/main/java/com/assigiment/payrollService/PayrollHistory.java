@@ -1,8 +1,6 @@
 package com.assigiment.payrollService;
 
-
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="payroll_history")
