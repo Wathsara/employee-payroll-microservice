@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.apache.http.impl.client.HttpClients;
 
-import org.json.JSONObject;
+//import org.json.JSONObject;
 
 import java.io.*;
 import java.net.*;
@@ -92,9 +92,9 @@ public class PayrollController {
         // json string
         String jsonStr = "{\"Fullname\": \"Address\", \"Email\": \"Basic_Salary\": \"Is_Permenent\": \"Department\": \"DOB\"}";
         // convert to json object
-        JSONObject json = new JSONObject(result);
+//        JSONObject json = new JSONObject(result);
         // print object
-        System.out.println(json.toString());
+//        System.out.println(json.toString());
 
         return result.toString();
     }
