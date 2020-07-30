@@ -1,20 +1,11 @@
 package com.assigiment.payrollService;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.hibernate.validator.internal.util.privilegedactions.GetMethod;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.*;
-
-import org.apache.http.impl.client.HttpClients;
 
 //import org.json.JSONObject;
 
@@ -40,14 +31,14 @@ public class PayrollController {
         return "Welcome to Software Engineering Assignment. PayrollService";
     }
 
-    @RequestMapping(value= "/test1", method=RequestMethod.GET)
+    @RequestMapping(value= "/get_payrolls", method=RequestMethod.GET)
     public List<Payroll> test1(){
         return payroll.findAll();
     }
 
 
     @RequestMapping(value = "/payroll", method = RequestMethod.GET)
-    public String  getPayroll() throws Exception{
+    public Object getPayroll() throws Exception{
 
         PayrollHistory emp1 = new PayrollHistory();
         emp1.setEmployee_id(1);
@@ -72,30 +63,23 @@ public class PayrollController {
         obj.setRecords(employee);
 
 //        payroll.save(obj);
+        JSONArray arr = getEmployeeData();
+        Object jsonValue;
+        for (int i = 0; i < arr.size(); i++) {
+            JSONObject jo = (JSONObject) arr.get(i);
+            String firstName = (String) jo.get("fullName");
+            System.out.println(firstName);
+        }
+        arr.forEach(item -> {
+
+            System.out.println(item.getClass());
+        });
         return getEmployeeData();
+
     }
 
-    @PutMapping("/employee/{id}")
-    public ResponseEntity < Employee > updateEmployee(@Valid @PathVariable(value = "id") Long employeeId,
-                                                      @RequestBody Employee employeeDetails) throws IllegalArgumentException {
 
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() ->
-                        new NotFoundException(String.format("Employee not found for this id :: " + employeeId))
-                );
-
-        employee.setFullName(employeeDetails.getFullName());
-        employee.setAddress(employeeDetails.getAddress());
-        employee.setEmail(employeeDetails.getEmail());
-        employee.setBasicSalary(employeeDetails.getBasicSalary());
-        employee.setPermanent(employeeDetails.isPermanent());
-        employee.setDepartment(employeeDetails.getDepartment());
-        employee.setDob(employeeDetails.getDob());
-        final Employee updatedEmployee = employeeRepository.save(employee);
-        return ResponseEntity.ok(updatedEmployee);
-    }
-
-    private static String getEmployeeData() throws Exception{
+    private static JSONArray getEmployeeData() throws Exception{
 
         StringBuilder result = new StringBuilder();
         URL url = new URL("http://35.247.184.208:8000/api/v1/employees");
@@ -116,27 +100,30 @@ public class PayrollController {
         // print object
 //        System.out.println(json.toString());
 
-        return result.toString();
+        JSONParser parser = new JSONParser();
+        Object json = parser.parse(result.toString());
+        JSONArray jsonArr = (JSONArray) json;
+        return jsonArr;
     }
 
-    private static String putPayrollData() throws Exception{
-        String sql = "insert into payroll (month, fullname, address, email, basic_salary, is_permenent, department, dob) values (?, ?, ?, ?,?, ?, ?)";
-        Connection connection = new getConnection();
-        PreparedStatement ps = connection.prepareStatement(sql);
-
-        for (Payroll payroll: payrolls) {
-            ps.setString(1, obj.getMonth());
-            ps.setString(1, employeeDetails.getFullName());
-            ps.setString(2, employeeDetails.getAddress());
-            ps.setString(3, employeeDetails.getEmail());
-            ps.setString(3, employeeDetails.getBasicSalary());
-            ps.setString(3, employeeDetails.isPermenent());
-            ps.setString(3, employeeDetails.getDepartment());
-            ps.setString(3, employeeDetails.getDob());
-            ps.addBatch();
-        }
-        ps.executeBatch();
-
-
-    }
+//    private static String putPayrollData() throws Exception{
+//        String sql = "insert into payroll (month, fullname, address, email, basic_salary, is_permenent, department, dob) values (?, ?, ?, ?,?, ?, ?)";
+//        Connection connection = new getConnection();
+//        PreparedStatement ps = connection.prepareStatement(sql);
+//
+//        for (Payroll payroll: payrolls) {
+//            ps.setString(1, obj.getMonth());
+//            ps.setString(1, employeeDetails.getFullName());
+//            ps.setString(2, employeeDetails.getAddress());
+//            ps.setString(3, employeeDetails.getEmail());
+//            ps.setString(3, employeeDetails.getBasicSalary());
+//            ps.setString(3, employeeDetails.isPermenent());
+//            ps.setString(3, employeeDetails.getDepartment());
+//            ps.setString(3, employeeDetails.getDob());
+//            ps.addBatch();
+//        }
+//        ps.executeBatch();
+//
+//
+//    }
 }
