@@ -2,26 +2,23 @@ package com.assigiment.payrollService;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-//import org.json.JSONObject;
-
 import java.io.*;
 import java.net.*;
-
 import java.util.LinkedList;
 import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping(value = "/service1")
+@RequestMapping(value = "/api/v1")
 public class PayrollController {
 
     @Autowired
     private PayrollRepository payroll;
+
     @Autowired
     private  PayrollHistoryRepository payrollHistoryRepository;
 
@@ -31,53 +28,62 @@ public class PayrollController {
         return "Welcome to Software Engineering Assignment. PayrollService";
     }
 
-    @RequestMapping(value= "/get_payrolls", method=RequestMethod.GET)
-    public List<Payroll> test1(){
+    @RequestMapping(value= "/getPaySheets", method=RequestMethod.GET)
+    public List<Payroll> getPaySheets(){
         return payroll.findAll();
     }
 
 
-    @RequestMapping(value = "/payroll", method = RequestMethod.GET)
-    public Object getPayroll() throws Exception{
-
-        PayrollHistory emp1 = new PayrollHistory();
-        emp1.setEmployee_id(1);
-        emp1.setBasic_salary(12000.00);
-        emp1.setSalary_after_pension_deducted(11000.00);
-        emp1.setSalary_after_EPF_deducted(10000.00);
-        emp1.setPaid_by_the_employer_on_behalf_of_the_employee_to_the_EPF(5000.00);
-
-        PayrollHistory emp2 = new PayrollHistory();
-        emp2.setEmployee_id(2);
-        emp2.setBasic_salary(12000.00);
-        emp2.setSalary_after_pension_deducted(11000.00);
-        emp2.setSalary_after_EPF_deducted(10000.00);
-        emp2.setPaid_by_the_employer_on_behalf_of_the_employee_to_the_EPF(5000.00);
+    @RequestMapping(value = "/createPaySheet", method = RequestMethod.POST)
+    public Object createPaySheet(@RequestBody Payroll payrollDetails) throws Exception{
 
         List<PayrollHistory> employee = new LinkedList<PayrollHistory>();
-        employee.add(emp1);
-        employee.add(emp2);
-
-        Payroll obj = new Payroll();
-        obj.setMonth("JAN");
-        obj.setRecords(employee);
-
-//        payroll.save(obj);
         JSONArray arr = getEmployeeData();
-        Object jsonValue;
         for (int i = 0; i < arr.size(); i++) {
             JSONObject jo = (JSONObject) arr.get(i);
-            String firstName = (String) jo.get("fullName");
-            System.out.println(firstName);
+            PayrollHistory emp1 = new PayrollHistory();
+            emp1.setEmployee_id((Long) jo.get("id"));
+            emp1.setBasic_salary((Double) jo.get("basicSalary"));
+            if((Boolean) jo.get("permanent")){
+                emp1.setSalary_pension_deducted_amount((Double) jo.get("basicSalary")*12/100);
+                emp1.setFinal_salary((Double) jo.get("basicSalary")*80/100);
+            }else{
+                emp1.setSalary_pension_deducted_amount(0);
+                emp1.setFinal_salary((Double) jo.get("basicSalary")*92/100);
+            }
+            emp1.setSalary_EPF_deducted_amount((Double) jo.get("basicSalary")*8/100);
+            emp1.setPaid_by_the_employer_on_behalf_of_the_employee_to_the_EPF((Double) jo.get("basicSalary")*12/100);
+            emp1.setTotol_EPF((Double) jo.get("basicSalary")*12/100 + (Double) jo.get("basicSalary")*8/100);
+            employee.add(emp1);
         }
-        arr.forEach(item -> {
-
-            System.out.println(item.getClass());
-        });
-        return getEmployeeData();
-
+        Payroll obj = new Payroll();
+        obj.setMonth(payrollDetails.getMonth());
+        obj.setYear(payrollDetails.getYear());
+        obj.setRecords(employee);
+        payroll.save(obj);
+        return ResponseEntity.ok().body("PaySheet For Month January Create");
     }
 
+    @RequestMapping(value= "/getPaySheet/{year}/{month}", method=RequestMethod.GET)
+    public JSONObject getPaySheets(@PathVariable(value = "year") int year , @PathVariable(value = "month") int month) throws Exception {
+        Payroll details = payroll.findByYearAndMonth(year,month);
+        List<PayrollHistory> historyArr = details.getRecords();
+        JSONObject full_details = new JSONObject();
+        JSONArray salary_employee = new JSONArray();
+        for (int i = 0; i < historyArr.size(); i++) {
+            JSONObject employerDetails = new JSONObject();
+            PayrollHistory jo =  historyArr.get(i);
+            JSONObject employer = getEmployeeDataById((int) jo.getEmployee_id());
+            employerDetails.put("employer", employer);
+            employerDetails.put("paysheet",jo);
+            salary_employee.add(employerDetails);
+
+        }
+        full_details.put("Month", details.getMonth());
+        full_details.put("Yesr", details.getYear());
+        full_details.put("Paysheet", salary_employee);
+        return full_details;
+    }
 
     private static JSONArray getEmployeeData() throws Exception{
 
@@ -91,39 +97,27 @@ public class PayrollController {
             result.append(line);
         }
         rd.close();
-        //System.out.println(result.toString());
-
-        // json string
-        String jsonStr = "{\"Fullname\": \"Address\", \"Email\": \"Basic_Salary\": \"Is_Permenent\": \"Department\": \"DOB\"}";
-        // convert to json object
-//        JSONObject json = new JSONObject(result);
-        // print object
-//        System.out.println(json.toString());
-
         JSONParser parser = new JSONParser();
         Object json = parser.parse(result.toString());
         JSONArray jsonArr = (JSONArray) json;
         return jsonArr;
     }
 
-//    private static String putPayrollData() throws Exception{
-//        String sql = "insert into payroll (month, fullname, address, email, basic_salary, is_permenent, department, dob) values (?, ?, ?, ?,?, ?, ?)";
-//        Connection connection = new getConnection();
-//        PreparedStatement ps = connection.prepareStatement(sql);
-//
-//        for (Payroll payroll: payrolls) {
-//            ps.setString(1, obj.getMonth());
-//            ps.setString(1, employeeDetails.getFullName());
-//            ps.setString(2, employeeDetails.getAddress());
-//            ps.setString(3, employeeDetails.getEmail());
-//            ps.setString(3, employeeDetails.getBasicSalary());
-//            ps.setString(3, employeeDetails.isPermenent());
-//            ps.setString(3, employeeDetails.getDepartment());
-//            ps.setString(3, employeeDetails.getDob());
-//            ps.addBatch();
-//        }
-//        ps.executeBatch();
-//
-//
-//    }
+    private static JSONObject getEmployeeDataById(int id) throws Exception{
+
+        StringBuilder result = new StringBuilder();
+        URL url = new URL("http://35.247.184.208:8000/api/v1/employee/"+id);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line;
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        rd.close();
+        JSONParser parser = new JSONParser();
+        JSONObject json = (JSONObject) parser.parse(result.toString());
+        System.out.println(json);
+        return json;
+    }
 }

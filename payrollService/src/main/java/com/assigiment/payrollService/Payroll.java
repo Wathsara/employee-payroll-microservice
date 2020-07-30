@@ -15,7 +15,10 @@ public class Payroll {
     private long id;
 
     @Column(name="month")
-    private String month;
+    private int month;
+
+    @Column(name="year")
+    private int year;
 
     @OneToMany(targetEntity = PayrollHistory.class,cascade = CascadeType.ALL)
     @JoinColumn(name ="phfk",referencedColumnName = "id")
@@ -29,11 +32,11 @@ public class Payroll {
         this.id = id;
     }
 
-    public String getMonth() {
+    public int getMonth() {
         return month;
     }
 
-    public void setMonth(String month) {
+    public void setMonth(int month) {
         this.month = month;
     }
 
@@ -43,5 +46,13 @@ public class Payroll {
 
     public void setRecords(List<PayrollHistory> records) {
         this.records = records;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }
