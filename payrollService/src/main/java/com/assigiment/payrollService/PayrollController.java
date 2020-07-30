@@ -75,6 +75,26 @@ public class PayrollController {
         return getEmployeeData();
     }
 
+    @PutMapping("/employee/{id}")
+    public ResponseEntity < Employee > updateEmployee(@Valid @PathVariable(value = "id") Long employeeId,
+                                                      @RequestBody Employee employeeDetails) throws IllegalArgumentException {
+
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() ->
+                        new NotFoundException(String.format("Employee not found for this id :: " + employeeId))
+                );
+
+        employee.setFullName(employeeDetails.getFullName());
+        employee.setAddress(employeeDetails.getAddress());
+        employee.setEmail(employeeDetails.getEmail());
+        employee.setBasicSalary(employeeDetails.getBasicSalary());
+        employee.setPermanent(employeeDetails.isPermanent());
+        employee.setDepartment(employeeDetails.getDepartment());
+        employee.setDob(employeeDetails.getDob());
+        final Employee updatedEmployee = employeeRepository.save(employee);
+        return ResponseEntity.ok(updatedEmployee);
+    }
+
     private static String getEmployeeData() throws Exception{
 
         StringBuilder result = new StringBuilder();
@@ -97,5 +117,26 @@ public class PayrollController {
 //        System.out.println(json.toString());
 
         return result.toString();
+    }
+
+    private static String putPayrollData() throws Exception{
+        String sql = "insert into payroll (month, fullname, address, email, basic_salary, is_permenent, department, dob) values (?, ?, ?, ?,?, ?, ?)";
+        Connection connection = new getConnection();
+        PreparedStatement ps = connection.prepareStatement(sql);
+
+        for (Payroll payroll: payrolls) {
+            ps.setString(1, obj.getMonth());
+            ps.setString(1, employeeDetails.getFullName());
+            ps.setString(2, employeeDetails.getAddress());
+            ps.setString(3, employeeDetails.getEmail());
+            ps.setString(3, employeeDetails.getBasicSalary());
+            ps.setString(3, employeeDetails.isPermenent());
+            ps.setString(3, employeeDetails.getDepartment());
+            ps.setString(3, employeeDetails.getDob());
+            ps.addBatch();
+        }
+        ps.executeBatch();
+
+
     }
 }
