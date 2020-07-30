@@ -1,6 +1,10 @@
 package com.assigiment.employeeDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.cloud.netflix.ribbon.RibbonClient;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +16,24 @@ import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(value = "/api/v1")
+@RibbonClient(name="employee-details-service")
 public class EmployeeController {
+
+    @Autowired
+    private LoadBalancerClient loadBalancer;
 
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Autowired
+    Environment environment;
+
     @RequestMapping("/")
     @ResponseBody
     public String welcome() {
-        return "Welcome to Software Engineering Assignment.";
+        ServiceInstance instance = loadBalancer.choose("employee-details-service");
+        String Port = String.valueOf(instance.getPort());
+        return ("Welcome to Software Engineering Assignment.\n I am running on Port : "+Port);
     }
 
     @RequestMapping(
