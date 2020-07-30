@@ -28,13 +28,13 @@ public class PayrollController {
         return "Welcome to Software Engineering Assignment. PayrollService";
     }
 
-    @RequestMapping(value= "/getPaySheets", method=RequestMethod.GET)
+    @RequestMapping(value= "/paysheets", method=RequestMethod.GET)
     public List<Payroll> getPaySheets(){
         return payroll.findAll();
     }
 
 
-    @RequestMapping(value = "/createPaySheet", method = RequestMethod.POST)
+    @RequestMapping(value = "/paysheet", method = RequestMethod.POST)
     public Object createPaySheet(@RequestBody Payroll payrollDetails) throws Exception{
 
         List<PayrollHistory> employee = new LinkedList<PayrollHistory>();
@@ -61,10 +61,10 @@ public class PayrollController {
         obj.setYear(payrollDetails.getYear());
         obj.setRecords(employee);
         payroll.save(obj);
-        return ResponseEntity.ok().body("PaySheet For Month January Create");
+        return ResponseEntity.ok().body("PaySheet created successfully");
     }
 
-    @RequestMapping(value= "/getPaySheet/{year}/{month}", method=RequestMethod.GET)
+    @RequestMapping(value= "/paysheet/{year}/{month}", method=RequestMethod.GET)
     public JSONObject getPaySheets(@PathVariable(value = "year") int year , @PathVariable(value = "month") int month) throws Exception {
         Payroll details = payroll.findByYearAndMonth(year,month);
         List<PayrollHistory> historyArr = details.getRecords();
