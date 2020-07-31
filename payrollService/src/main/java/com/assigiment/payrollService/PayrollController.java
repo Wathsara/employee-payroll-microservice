@@ -19,9 +19,6 @@ public class PayrollController {
     @Autowired
     private PayrollRepository payroll;
 
-    @Autowired
-    private  PayrollHistoryRepository payrollHistoryRepository;
-
     @RequestMapping("/")
     @ResponseBody
     public String welcome() {
@@ -30,6 +27,7 @@ public class PayrollController {
 
     @RequestMapping(value= "/paysheets", method=RequestMethod.GET)
     public List<Payroll> getPaySheets(){
+
         return payroll.findAll();
     }
 
@@ -66,22 +64,24 @@ public class PayrollController {
 
     @RequestMapping(value= "/paysheet/{year}/{month}", method=RequestMethod.GET)
     public JSONObject getPaySheets(@PathVariable(value = "year") int year , @PathVariable(value = "month") int month) throws Exception {
-        Payroll details = payroll.findByYearAndMonth(year,month);
+        Payroll details = payroll.findByYearAndMonth(year,month)
+                .orElseThrow(() -> new NotFoundException("PaySheet is no available for the: "+year+"-"+month));
+
         List<PayrollHistory> historyArr = details.getRecords();
         JSONObject full_details = new JSONObject();
         JSONArray salary_employee = new JSONArray();
-        for (int i = 0; i < historyArr.size(); i++) {
+        for (PayrollHistory payrollHistory : historyArr) {
             JSONObject employerDetails = new JSONObject();
-            PayrollHistory jo =  historyArr.get(i);
+            PayrollHistory jo = payrollHistory;
             JSONObject employer = getEmployeeDataById((int) jo.getEmployee_id());
             employerDetails.put("employer", employer);
-            employerDetails.put("paysheet",jo);
+            employerDetails.put("PaySheet", jo);
             salary_employee.add(employerDetails);
 
         }
         full_details.put("Month", details.getMonth());
-        full_details.put("Yesr", details.getYear());
-        full_details.put("Paysheet", salary_employee);
+        full_details.put("year", details.getYear());
+        full_details.put("PaySheet", salary_employee);
         return full_details;
     }
 
@@ -117,7 +117,6 @@ public class PayrollController {
         rd.close();
         JSONParser parser = new JSONParser();
         JSONObject json = (JSONObject) parser.parse(result.toString());
-        System.out.println(json);
         return json;
     }
 }
