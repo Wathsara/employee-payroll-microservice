@@ -65,7 +65,7 @@ public class PayrollController {
     @RequestMapping(value= "/paysheet/{year}/{month}", method=RequestMethod.GET)
     public JSONObject getPaySheets(@PathVariable(value = "year") int year , @PathVariable(value = "month") int month) throws Exception {
         Payroll details = payroll.findByYearAndMonth(year,month)
-                .orElseThrow(() -> new NotFoundException("PaySheet is no available for the: "+year+"-"+month));
+                .orElseThrow(() -> new NotFoundException("PaySheet is not available for : Year "+year+" Month-"+month));
 
         List<PayrollHistory> historyArr = details.getRecords();
         JSONObject full_details = new JSONObject();
