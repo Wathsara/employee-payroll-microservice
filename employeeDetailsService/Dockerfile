@@ -1,4 +1,11 @@
 FROM openjdk:latest
-ADD target/employeeDetailsService-0.0.1-SNAPSHOT.jar app.jar
-ENTRYPOINT ["java","-jar","app.jar"]
+WORKDIR /work
+COPY mvnw /work/mvnw
+COPY .mvn /work/.mvn
+COPY pom.xml /work/pom.xml
+RUN ./mvnw dependency:go-offline
+COPY . /work/
+RUN ./mvnw install
+RUN chmod +x /work/target/employeeDetailsService-0.0.1-SNAPSHOT.jar
+ENTRYPOINT ["java","-jar","/work/target/employeeDetailsService-0.0.1-SNAPSHOT.jar"]
 EXPOSE 8000
