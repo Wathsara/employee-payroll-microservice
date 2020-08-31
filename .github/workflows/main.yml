@@ -6,10 +6,33 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  employee:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Docker Build For employee Management Microservice
-      run: |
-        docker build ./employeeDetailsService -t wathsara/employee-microservice:1.0.0
+    - name: Docker Build for employee service
+      uses: actions/checkout@v2    
+    - name: Push to GitHub Packages employee
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GH_TOKEN }}
+        registry: docker.pkg.github.com
+        path: ./employeeDetailsService
+        tags: 1.0.0 
+        repository:  wathsara/employee-payroll-microservice/employee-microservice 
+        tag_with_ref: true
+  payroll:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Docker Build for payroll service
+      uses: actions/checkout@v2    
+    - name: Push to GitHub Packages payroll
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GH_TOKEN }}
+        registry: docker.pkg.github.com
+        path: ./payrollService
+        tags: 1.0.0 
+        repository:  wathsara/employee-payroll-microservice/payroll-microservice 
+        tag_with_ref: true
